@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: corednsOperator
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: delete-coredns
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: delete-coredns-corednsOperator
+subjects:
+  - kind: ServiceAccount
+    name: corednsOperator
+roleRef:
+  kind: Role
+  name: delete-coredns
+  apiGroup: rbac.authorization.k8s.io
