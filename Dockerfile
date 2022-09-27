@@ -1,9 +1,16 @@
-FROM bitnami/kubectl
-RUN curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-`uname -s`-`uname -m` -o envsubst && \
-    chmod +x envsubst && \
-    mv envsubst /usr/local/bin
-WORKDIR /tmp/job
-ADD ./job.yaml job.yaml
-ADD ./operator.sh operator.sh
-ENV NODENAME null
-ENTRYPOINT [ "/bin/sh", "-c", "./operator.sh" ]
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+    
+# Copy csproj and restore as distinct layers
+COPY ./app/*.csproj ./
+RUN dotnet restore
+    
+# Copy everything else and build
+COPY ./app ./
+RUN dotnet publish -c Release -o out
+    
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "corednsOperator.dll"]

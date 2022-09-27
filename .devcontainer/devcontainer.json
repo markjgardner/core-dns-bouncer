@@ -57,6 +57,7 @@
 	"features": {
 		"docker-in-docker": "latest",
 		"kubectl-helm-minikube": "latest",
-		"azure-cli": "latest"
+		"azure-cli": "latest",
+		"github-cli": "latest"
 	}
 }
