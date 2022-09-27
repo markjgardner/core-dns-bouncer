@@ -26,54 +26,13 @@ public class OperatorController : ControllerBase
 
     // Post nodeName
     [HttpGet(Name = "DeleteCoreDNSOnNode")]
-    public IActionResult CreateJob([FromQuery] string nodeName)
+    public IActionResult DeleteCoreDNS([FromQuery] string nodeName)
     {
         _logger.LogInformation($"nodeName: {nodeName}");
         var podName = GetPodName(nodeName);
         _logger.LogInformation($"podName: {podName}");
-
-        var ns = new V1Namespace
-        {
-            Metadata = new V1ObjectMeta
-            {
-                Name = "kube-system"
-            }
-        };
-
-        var job = _kubernetes.BatchV1.CreateNamespacedJob(new V1Job
-        {
-            Metadata = new V1ObjectMeta
-            {
-                Name = "delete-coredns",
-            },
-            Spec = new V1JobSpec
-            {
-                Template = new V1PodTemplateSpec
-                {
-                    Spec = new V1PodSpec
-                    {
-                        ServiceAccountName = "corednsdeleter",
-                        Containers = new List<V1Container>
-                        {
-                            new V1Container
-                            {
-                                Name = "delete-coredns",
-                                Image = "bitnami/kubectl:latest",
-                                Command = new List<string>
-                                {
-                                    "sh", 
-                                    "-c", 
-                                    $"kubectl delete pod -n kube-system {podName}"
-                                }
-                            }
-                        },
-                        RestartPolicy = "Never"
-                    }
-                },
-                BackoffLimit = 4
-            }
-        },
-        "kube-system");
+        
+        var pod = _kubernetes.CoreV1.DeleteNamespacedPodAsync(podName, "kube-system");
 
         return Ok();
     }
