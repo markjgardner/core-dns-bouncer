@@ -16,4 +16,4 @@ kubectl apply -f 2-deployment.yaml -n kube-system
 *Note: currently these yaml files will pull the image published to this repo. You will likely want to use your own image.
 
 ### Run
-Send an HTTP GET request to the service with the ```nodeName``` query parameter. 
+Send an HTTP POST request to the service with a [Log Alert](https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-common-schema-definitions#log-alerts) payload containing the affected node name. 
