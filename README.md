@@ -1,12 +1,12 @@
-# core-dns-bouncer
+# kube-proxy-bouncer
 An operator that attempts to resolve sporadic DNS failures on windows nodepools caused by an HNS failure.
 
 ### Workflow:
 * Monitor detects DNS resolution errors for a specific node. 
 * An action is triggered which invokes a web endpoint with the node name as payload. 
-* The operator queries for the name of the CoreDNS pod running on the affected node.
-* The operator then deletes the CoreDNS pod on that node.
-* CoreDNS is rescheduled on the node forcing HNS to reapply all network policies and restoring the node.
+* The operator queries for the name of the kubeproxy pod running on the affected node.
+* The operator then deletes the kubeproxy pod on that node.
+* kubeproxy is rescheduled on the node forcing HNS to reapply all network policies and restoring the node.
 
 ### Install
 ```bash

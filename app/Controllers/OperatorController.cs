@@ -4,7 +4,7 @@ using k8s.Models;
 using System.Dynamic;
 using Newtonsoft.Json;
 
-namespace corednsOperator.Controllers;
+namespace kubeproxyOperator.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -27,8 +27,8 @@ public class OperatorController : ControllerBase
     }
 
     // Post nodeName
-    [HttpPost(Name = "DeleteCoreDNSOnNode")]
-    public IActionResult DeleteCoreDNS(Object alertData)
+    [HttpPost(Name = "DeletekubeproxyOnNode")]
+    public IActionResult Deletekubeproxy(Object alertData)
     {
         dynamic alert = JsonConvert.DeserializeObject(alertData.ToString());
         //assumes the node name is the first returned field in the result set
