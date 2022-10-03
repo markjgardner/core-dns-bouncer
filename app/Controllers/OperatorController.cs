@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using k8s;
 using k8s.Models;
+using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace corednsOperator.Controllers;
 
@@ -19,15 +21,18 @@ public class OperatorController : ControllerBase
 
     private string GetPodName(string nodeName) 
     {
-        var pods = _kubernetes.CoreV1.ListNamespacedPod("kube-system", labelSelector: "k8s-app=kube-dns", fieldSelector: $"spec.nodeName={nodeName}");
+        var pods = _kubernetes.CoreV1.ListNamespacedPod("kube-system", labelSelector: "component=kube-proxy", fieldSelector: $"spec.nodeName={nodeName}");
         _logger.LogInformation($"Found {pods.Items.Count()} pods");
         return pods.Items.First().Metadata.Name;
     }
 
     // Post nodeName
-    [HttpGet(Name = "DeleteCoreDNSOnNode")]
-    public IActionResult DeleteCoreDNS([FromQuery] string nodeName)
+    [HttpPost(Name = "DeleteCoreDNSOnNode")]
+    public IActionResult DeleteCoreDNS(Object alertData)
     {
+        dynamic alert = JsonConvert.DeserializeObject(alertData.ToString());
+        //assumes the node name is the first returned field in the result set
+        string nodeName = alert.alertContext.SearchResults.tables[0].rows[0][0];
         _logger.LogInformation($"nodeName: {nodeName}");
         var podName = GetPodName(nodeName);
         _logger.LogInformation($"podName: {podName}");
