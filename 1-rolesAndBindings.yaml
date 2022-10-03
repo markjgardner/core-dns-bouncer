@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: corednsoperator
+  name: kubeproxyoperator
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: delete-coredns
+  name: delete-kubeproxy
 rules:
   - apiGroups: [""]
     resources:
@@ -19,11 +19,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: delete-coredns-corednsdeleter
+  name: delete-kubeproxy-kubeproxydeleter
 subjects:
   - kind: ServiceAccount
-    name: corednsoperator
+    name: kubeproxyoperator
 roleRef:
   kind: Role
-  name: delete-coredns
+  name: delete-kubeproxy
   apiGroup: rbac.authorization.k8s.io

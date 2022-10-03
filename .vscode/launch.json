@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/app/bin/Debug/net6.0/corednsOperator.dll",
+            "program": "${workspaceFolder}/app/bin/Debug/net6.0/kubeproxyOperator.dll",
             "args": [],
             "cwd": "${workspaceFolder}/app",
             "stopAtEntry": false,
